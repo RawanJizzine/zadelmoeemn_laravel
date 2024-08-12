@@ -8,6 +8,33 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    public function saveTimezone(Request $request)
+    {
+        $user = User::find($request->user_id);
+        if ($user) {
+            $user->timezone = $request->timezone;
+            $user->save();
+    
+            return response()->json(['message' => 'Timezone saved successfully'], 200);
+        } else {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function store(Request $request)
     {
         // Validate the request
