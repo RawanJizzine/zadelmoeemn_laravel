@@ -116,7 +116,7 @@ public function getUserCompetitions($userId)
 
     // Get the current date in the user's timezone
     $today = Carbon::now($timezone)->startOfDay();
-    $todayFlutter = Carbon::now($timezone)->startOfDay()->toIso8601String();
+    $todayFlutter = Carbon::now($timezone)->startOfDay()->setTimezone($timezone)->format('Y-m-d\TH:i:sP');
 
     // Initialize the array to hold competition data
     $competitions = [];
@@ -240,6 +240,7 @@ public function getResultsestkhfar($competitionId, Request $request)
     $results = $query->select('subscription_id', DB::raw('SUM(counter_value) as total_counter_value'))
                      ->groupBy('subscription_id')
                      ->orderBy('total_counter_value', 'desc')
+                     ->take(100)
                      ->get();
 
     // Enhance the results with user details
@@ -312,7 +313,7 @@ private function fetchCompetitionCounters($competition_id, $userTimezone)
         ->values();
 
     // Sort the results by total_counter_value from largest to smallest
-    $sortedCounters = $counters->sortByDesc('total_counter_value')->values()->toArray();
+    $sortedCounters = $counters->sortByDesc('total_counter_value')->take(50)->values()->toArray();
 
     return $sortedCounters;
 }
